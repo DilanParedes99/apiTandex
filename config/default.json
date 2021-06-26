@@ -1,0 +1,12 @@
+{
+    "app":{
+        "port":8080,
+        "JWT_SECRET":"TANDEX2021ITMORELIA"
+    },
+    "db":{
+        "host":"localhost",
+        "db":"tandex",
+        "user":"root",
+        "password":""
+    }
+}
