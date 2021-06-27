@@ -25,18 +25,16 @@ function upload (req, res) {
 
 function login (req, res) {
     const {email, pass} = req.body
-    console.log(email,pass)
-
     dbconn.query('SELECT * FROM `user` WHERE email= ? and password= ?',[email,pass])
     .then(rows=>{
         if(rows.length == 1){
-            const accessToken = jwt.sign({ userId: rows[0].email , nombre : rows[0].password}, process.env.JWT_SECRET, {
-                expiresIn: "1m"
+            const accessToken = jwt.sign({ userId: rows[0].email , nombre : rows[0].password} , process.env.JWT_SECRET, {
+                expiresIn: "1d"
             });
             res.status(200).json({
                 msg:'Autenticación correcta',
                 token : accessToken
-            })
+            }) 
         }else{
             res.status(401).json({msg:'Autenticación incorrecta'})
         }
@@ -46,6 +44,7 @@ function login (req, res) {
 }
 
 function getProductos(req, res) {
+    
     dbconn.query('SELECT * FROM `productos` WHERE 1')
     .then(rows=>{
             res.status(200).json({
@@ -54,8 +53,7 @@ function getProductos(req, res) {
             })
     }).catch(err=>{
         res.status(400).json({
-            msg:err,
-            
+            msg:err
         })
     })
 }
