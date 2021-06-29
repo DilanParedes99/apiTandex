@@ -8,7 +8,6 @@ module.exports.setup = (app,express) =>{
     secureapp.use((req,res,next) => {
         
         const bearer = req.headers['authorization']
-        console.log(bearer)
         if(bearer){
             jwt.verify(bearer,process.env.JWT_SECRET, function(err,decode){
                 if(err){
@@ -16,22 +15,24 @@ module.exports.setup = (app,express) =>{
                         msg:'Token_invalido'
                     })
                 }else{
-                    console.log('Token_valido')
                     next()
                 }
             })
         }else{
             res.status(401).json({
-                msg:'sin token'
+                msg:'Sin autorización'
             })
         }
     })
 
     app.get('/', (req,res) => res.status(200).json({msg:'Ya jala el servicio'}))
-    //aqui van las rutas
+    //POST
 
     app.post('/login', controler.login)
-    app.post('/upload_file',secureapp, controler.upload)
+    app.post('/upload_file',secureapp, controler.uploadFile)
+    app.post('/upload_user',secureapp, controler.uploadUser)
+
+    //GET
     app.get('/getProductos',secureapp,controler.getProductos)
 
 

@@ -1,7 +1,7 @@
 const dbconn = require('../dbconn/dbconn')()
 const jwt = require('jsonwebtoken')
 
-function upload (req, res) {
+function uploadFile (req, res) {
     const archivo = req.body
     if(archivo.length==0 || archivo == null){
         res.status(400).json({error:'Archivo invalido',
@@ -29,7 +29,7 @@ function login (req, res) {
     .then(rows=>{
         if(rows.length == 1){
             const accessToken = jwt.sign({ userId: rows[0].email , nombre : rows[0].password} , process.env.JWT_SECRET, {
-                expiresIn: "1d"
+                expiresIn: "1h"
             });
             res.status(200).json({
                 msg:'Autenticación correcta',
@@ -58,8 +58,15 @@ function getProductos(req, res) {
     })
 }
 
+function uploadUser(req, res) {
+    const{nombre,apellidoPaterno,apellidoMaterno,telefono,email,password}= req.body
+    //console.log(nombre,apellidoPaterno,apellidoMaterno,telefono,email,password)
+    res.status(200).json({msg:'Usuario creado'})
+}
+
 module.exports= {
     login,
-    upload,
-    getProductos
+    uploadFile,
+    getProductos,
+    uploadUser,
 }
