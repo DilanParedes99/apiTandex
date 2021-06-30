@@ -5,7 +5,7 @@
     },
     "db":{
         "host":"localhost",
-        "db":"tandex",
+        "db":"backend",
         "user":"root",
         "password":""
     }

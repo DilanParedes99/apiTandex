@@ -34,6 +34,7 @@ module.exports.setup = (app,express) =>{
 
     //GET
     app.get('/getProductos',secureapp,controler.getProductos)
+    app.get('/getUsers',secureapp,controler.showUsers)
 
 
     return app

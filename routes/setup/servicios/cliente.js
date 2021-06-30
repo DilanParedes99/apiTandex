@@ -25,7 +25,7 @@ function uploadFile (req, res) {
 
 function login (req, res) {
     const {email, pass} = req.body
-    dbconn.query('SELECT * FROM `user` WHERE email= ? and password= ?',[email,pass])
+    dbconn.query('SELECT * FROM `cuenta` WHERE correo= ? and contrasena= ?',[email,pass])
     .then(rows=>{
         if(rows.length == 1){
             const accessToken = jwt.sign({ userId: rows[0].email , nombre : rows[0].password} , process.env.JWT_SECRET, {
@@ -60,13 +60,35 @@ function getProductos(req, res) {
 
 function uploadUser(req, res) {
     const{nombre,apellidoPaterno,apellidoMaterno,telefono,email,password}= req.body
-    //console.log(nombre,apellidoPaterno,apellidoMaterno,telefono,email,password)
-    res.status(200).json({msg:'Usuario creado'})
+    dbconn.query('INSERT INTO `cuenta`(`idUsuario`, `nivelCuenta`, `Correo`, `Contrasena`, `nombre`, `Apellido_paterno`, `Apellido_materno`, `telefono`) VALUES (?,?,?,?,?,?,?,?)',['1','Admnistrador',email,password,nombre,apellidoPaterno,apellidoMaterno,telefono])
+    .then(rows=>{
+        res.status(200).json({msg:'Usuario creado'})
+    }).catch(err=>{
+        console.log(err);
+        res.status(500).json({msg : 'ocurrió un error'})
+    })
 }
+
+function showUsers(req, res){
+    dbconn.query('SELECT nivelCuenta,nombre, Apellido_paterno FROM `cuenta` WHERE 1')
+    .then(rows=>{
+        res.status(200).json({
+            status:200,
+            usuarios:rows
+        }).catch(err=>{
+            res.status(401).json({
+                msg:'Error al obtener usuarios',
+                err:err
+            })
+        })
+    })
+}
+
 
 module.exports= {
     login,
     uploadFile,
     getProductos,
     uploadUser,
+    showUsers
 }
