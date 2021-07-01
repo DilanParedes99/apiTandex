@@ -26,11 +26,13 @@ module.exports.setup = (app,express) =>{
     })
 
     app.get('/', (req,res) => res.status(200).json({msg:'Ya jala el servicio'}))
+    
     //POST
-
     app.post('/login', controler.login)
     app.post('/upload_file',secureapp, controler.uploadFile)
     app.post('/upload_user',secureapp, controler.uploadUser)
+    app.post('/post_products',secureapp, controler.uploadProducts)
+    app.post('/update_products',secureapp, controler.updateProducts)
 
     //GET
     app.get('/getProductos',secureapp,controler.getProductos)

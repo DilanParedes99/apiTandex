@@ -19,6 +19,7 @@
     "morgan": "^1.10.0",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.7",
+    "woocommerce-api": "^1.5.0",
     "xlsx": "^0.17.0"
   }
 }
