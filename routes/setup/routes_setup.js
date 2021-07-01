@@ -25,19 +25,22 @@ module.exports.setup = (app,express) =>{
         }
     })
 
+    //home prueba de servidor
     app.get('/', (req,res) => res.status(200).json({msg:'Ya jala el servicio'}))
     
     //POST
     app.post('/login', controler.login)
     app.post('/upload_file',secureapp, controler.uploadFile)
     app.post('/upload_user',secureapp, controler.uploadUser)
-    app.post('/post_products',secureapp, controler.uploadProducts)
     app.post('/update_products',secureapp, controler.updateProducts)
-
+    app.post('/update_user',secureapp, controler.updateUser)
+    
     //GET
     app.get('/getProductos',secureapp,controler.getProductos)
     app.get('/getUsers',secureapp,controler.showUsers)
-
+    
+    //API woocomerce
+    app.post('/post_products',secureapp, controler.uploadProducts)
 
     return app
 }
