@@ -1,6 +1,6 @@
 {
     "app":{
-        "port":"https://tandexelectronicosmx.herokuapp.com/",
+        "port":8080,
         "JWT_SECRET":"TANDEX2021ITMORELIA"
     },
     "db":{
