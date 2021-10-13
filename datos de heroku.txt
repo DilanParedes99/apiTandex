@@ -1,0 +1,6 @@
+mysql://b862204be6d5e4:3dea702f@us-cdbr-east-04.cleardb.com/heroku_9447d3f2da6a513?reconnect=true
+
+nombre de usuario: b862204be6d5e4
+contraseña: 3dea702f
+host: us-cdbr-east-04.cleardb.com/
+nombre BD: heroku_9447d3f2da6a513
