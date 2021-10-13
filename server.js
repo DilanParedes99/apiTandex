@@ -4,7 +4,7 @@ const http = require('http')
 const cors = require('cors')
 //   
 const morgan = require('morgan')
-const puerto = server_config.get('app.port')
+const puerto = process.env.PORT || server_config.get('app.port')
 
 process.env.JWT_SECRET = (server_config.get('app.JWT_SECRET'))
 

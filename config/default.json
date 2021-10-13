@@ -1,12 +1,13 @@
 {
     "app":{
-        "port":"https://tandexelectronicosmx.herokuapp.com/",
+        "port":8080,
         "JWT_SECRET":"TANDEX2021ITMORELIA"
     },
     "db":{
-        "host":"localhost",
-        "db":"backend",
-        "user":"root",
-        "password":""
+        "host":"us-cdbr-east-04.cleardb.com",
+        "db":"heroku_9447d3f2da6a513",
+        "user":"b862204be6d5e4",
+        "password":"3dea702f"
     }
 }
+
