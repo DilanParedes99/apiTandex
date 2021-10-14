@@ -5,8 +5,9 @@
     },
     "db":{
         "host":"us-cdbr-east-04.cleardb.com",
-        "db":"heroku_9447d3f2da6a513",
-        "user":"b862204be6d5e4",
-        "password":"3dea702f"
+        "db":"heroku_1a378f873641606",
+        "user":"bb79c318681cf6",
+        "password":"6fe80e9b"
     }
 }
+//mysql://bb79c318681cf6:6fe80e9b@us-cdbr-east-04.cleardb.com/heroku_1a378f873641606?reconnect=true
