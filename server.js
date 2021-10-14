@@ -2,9 +2,9 @@ const express = require('express')
 const server_config = require('config')
 const http = require('http')
 const cors = require('cors')
-//   
+  
 const morgan = require('morgan')
-const puerto = process.env.PORT || server_config.get('app.port')
+const puerto = process.env.PORT || 8080
 
 process.env.JWT_SECRET = (server_config.get('app.JWT_SECRET'))
 
