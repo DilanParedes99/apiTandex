@@ -26,7 +26,7 @@ module.exports.setup = (app,express) =>{
     })
 
     //home prueba de servidor
-    app.get('/inicio', (req,res) => res.status(200).json({msg:'Ya jala el servicio'}))
+    app.get('/', (req,res) => res.status(200).json({msg:'Api de TANDEX online'}))
     
     //POST
     app.post('/login', controler.login)
