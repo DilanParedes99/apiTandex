@@ -16,7 +16,7 @@ const WooCommerce = new WooCommerceRestApi({
     version: 'wc/v3' // WooCommerce WP REST API version
   });
 
-
+//subir productos desde excel actualizado
 function uploadFile (req, res) {
     const archivo = req.body
     if(archivo.length==0 || archivo == null){
@@ -24,17 +24,32 @@ function uploadFile (req, res) {
         message:'Revise formato de archivo'    })
         console.log("archivo invalido")
     }else{
-        console.log(archivo)
-            for(let indice = 0;indice<archivo.length;indice++){
-                dbconn.query('INSERT INTO `productos`(`Clave`, `Descripción`, `Existencias`, `Línea`, `Unidad_de_entrada`, `Moneda`, `Fecha_ultima_compra`, `Ultimo_costo`, `Nombre_de_imagen`, `ID_SAE`, `Clave_unidad`, `Clave_alterna`, `Campo_libre`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                [archivo[0]['Clave '],archivo[indice]['Descripción '],archivo[indice]['Existencias '],archivo[indice]['Línea '],archivo[indice]['Unidad de entrada '],archivo[indice]['Moneda '],archivo[indice]['Fecha de última compra '],'',archivo[indice]['Nombre de la imagen '],archivo[indice]['ID para sincronización con SAE '],archivo[indice]['Clave unidad '],archivo[indice]['Clave alterna '],archivo[indice]['Campo libre 8  ']])
-                .then(rows=>{
-                    res.status(200).json({msg : 'Productos subidos con exito',data : rows})
-                }).catch(err=>{
-                    console.log(err);
-                    res.status(500).json({msg : 'ocurrió un error'})
-                })
-           } 
+       /*  console.log(archivo[0]) */
+
+
+        for(let indice = 0;indice<archivo.length;indice++){
+            dbconn.query('call verificar_clave_primary_producto(?)',[archivo[indice]['Clave ']])
+            .then(rows=>{
+
+                res.status(400).json({message:'clave duplicada, no se puede insertar'})
+            }).catch(err=>{
+                console.log(err)
+                
+                dbconn.query('call update_productos(?,?,?,?,?,?,?)',
+                    [archivo[indice]['Clave '],archivo[indice]['Linea '],archivo[indice]['Descripción '],archivo[indice]['Último costo '],'',archivo[indice]['Existencias '],archivo[indice]['Unidad de entrada ']])
+                    .then(rows=>{
+                        res.status(200).json({msg : 'Producto subidos con exito',data : rows})
+                    }).catch(err=>{
+                        console.log(err);
+                        process.on('unhandledRejection', error => {
+                            // Won't execute
+                            
+                          });
+                        res.status(500).json({msg : 'ocurrió un error',error : err}) 
+                       
+                    })
+            })
+        }  
         } 
         
     }
