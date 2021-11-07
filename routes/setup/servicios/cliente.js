@@ -25,7 +25,7 @@ function uploadFile (req, res) {
         console.log("archivo invalido")
     }else{
         console.log(archivo)
-           /* for(let indice = 0;indice<archivo.length;indice++){
+            for(let indice = 0;indice<archivo.length;indice++){
                 dbconn.query('INSERT INTO `productos`(`Clave`, `Descripción`, `Existencias`, `Línea`, `Unidad_de_entrada`, `Moneda`, `Fecha_ultima_compra`, `Ultimo_costo`, `Nombre_de_imagen`, `ID_SAE`, `Clave_unidad`, `Clave_alterna`, `Campo_libre`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)',
                 [archivo[0]['Clave '],archivo[indice]['Descripción '],archivo[indice]['Existencias '],archivo[indice]['Línea '],archivo[indice]['Unidad de entrada '],archivo[indice]['Moneda '],archivo[indice]['Fecha de última compra '],'',archivo[indice]['Nombre de la imagen '],archivo[indice]['ID para sincronización con SAE '],archivo[indice]['Clave unidad '],archivo[indice]['Clave alterna '],archivo[indice]['Campo libre 8  ']])
                 .then(rows=>{
@@ -34,7 +34,7 @@ function uploadFile (req, res) {
                     console.log(err);
                     res.status(500).json({msg : 'ocurrió un error'})
                 })
-           } */
+           } 
         } 
         
     }
@@ -97,17 +97,33 @@ function getProductos(req, res) {
 function uploadUser(req, res) {
     const{nombre,apellidoPaterno,apellidoMaterno,telefono,email,password,nivelCuenta}= req.body
     //console.log(nombre,apellidoPaterno,apellidoMaterno,telefono,email,password,"hash",nivelCuenta)
-     bcrypt.hash(password,10,function(err,data){ 
-        if(data){
-            dbconn.query('INSERT INTO `heroku_1a378f873641606`.`usuarios` (`tipoUsuario`,`correo`,`password`,`nombre`,`apellido`)VALUES(?,?,?,?,?)',[nivelCuenta,email,data,nombre,apellidoPaterno])
-            .then(rows=>{
-                res.status(200).json({msg:'Usuario creado'})
-            }).catch(err=>{
-                console.log(err);
-                res.status(500).json({msg : 'ocurrió un error'})
-            })
+
+    dbconn.query(`call valida_correo_repetido(?)`,[email])
+    .then(rows=>{
+        const datos = rows[0];
+
+        const correoV = JSON.stringify(datos[0].correo);
+        const correoV2 = JSON.stringify(email);
+        
+        if(correoV2 == correoV){
+            res.status(400).json({message:'El usuario ya existe'})
         }
-    }) 
+        
+    }).catch(err=>{
+        /* res.status(200).json({message:'El correo no existe en la base de datos'}) */
+        console.log(err)
+        bcrypt.hash(password,10,function(err,data){ 
+          if(data){
+              dbconn.query('INSERT INTO `heroku_1a378f873641606`.`usuarios` (`tipoUsuario`,`correo`,`password`,`nombre`,`apellido`)VALUES(?,?,?,?,?)',[nivelCuenta,email,data,nombre,apellidoPaterno])
+              .then(rows=>{
+                  res.status(200).json({msg:'Usuario creado'})
+              }).catch(err=>{
+                  console.log(err);
+                  res.status(500).json({msg : 'ocurrió un error'})
+              })
+          }
+      })  
+    })
 
 }
     //Mostrar usuarios *actualizado*
