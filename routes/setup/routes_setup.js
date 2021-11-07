@@ -31,7 +31,7 @@ module.exports.setup = (app,express) =>{
     //POST
     app.post('/login', controler.login)
     app.post('/upload_file',secureapp, controler.uploadFile)
-    app.post('/upload_user',secureapp, controler.uploadUser)
+    app.post('/upload_user',secureapp,controler.uploadUser)
     app.post('/update_products',secureapp, controler.updateProducts)
     app.post('/update_user',secureapp, controler.updateUser)
     

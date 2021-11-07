@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken')
 //encriptacion de password
 const bcrypt = require('bcrypt');
 
+
 //WooCommerceRestApi
 const WooCommerceRestApi = require("@woocommerce/woocommerce-rest-api").default;
 
@@ -23,8 +24,8 @@ function uploadFile (req, res) {
         message:'Revise formato de archivo'    })
         console.log("archivo invalido")
     }else{
-
-           for(let indice = 0;indice<archivo.length;indice++){
+        console.log(archivo)
+           /* for(let indice = 0;indice<archivo.length;indice++){
                 dbconn.query('INSERT INTO `productos`(`Clave`, `Descripción`, `Existencias`, `Línea`, `Unidad_de_entrada`, `Moneda`, `Fecha_ultima_compra`, `Ultimo_costo`, `Nombre_de_imagen`, `ID_SAE`, `Clave_unidad`, `Clave_alterna`, `Campo_libre`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)',
                 [archivo[0]['Clave '],archivo[indice]['Descripción '],archivo[indice]['Existencias '],archivo[indice]['Línea '],archivo[indice]['Unidad de entrada '],archivo[indice]['Moneda '],archivo[indice]['Fecha de última compra '],'',archivo[indice]['Nombre de la imagen '],archivo[indice]['ID para sincronización con SAE '],archivo[indice]['Clave unidad '],archivo[indice]['Clave alterna '],archivo[indice]['Campo libre 8  ']])
                 .then(rows=>{
@@ -33,29 +34,42 @@ function uploadFile (req, res) {
                     console.log(err);
                     res.status(500).json({msg : 'ocurrió un error'})
                 })
-           }
+           } */
         } 
         
     }
 
+    //login *actualizado*
 function login (req, res) {
     const {email, pass} = req.body
-    console.log(email,pass)
-    dbconn.query('SELECT * FROM `cuenta` WHERE correo= ?',[email])
-    .then(rows=>{
-        if(rows.length == 1){
-            bcrypt.compare(pass, rows[0].Contrasena, function(err, result) {
-                if(result == true){
-                    const accessToken = jwt.sign({ userId: rows[0].email , nombre : rows[0].Contrasena} , process.env.JWT_SECRET, {
-                        expiresIn: "1h"
-                    });
-                    res.status(200).json({
-                        msg:'Autenticación correcta',
-                        token : accessToken
-                    }) 
+    console.log(email,pass, req.body)
+    /* dbconn.query('SELECT * FROM `cuenta` WHERE correo= ?',[email]) */
 
-                }
-            });
+    //SELECT * FROM heroku_1a378f873641606.usuarios where correo='admin2@gmail.com'
+     dbconn.query('SELECT * FROM heroku_1a378f873641606.usuarios where correo= ?',[email]) 
+    .then(rows=>{
+        console.log(rows)
+        const encriptada = rows[0].password
+        if(rows.length == 1){
+            console.log(rows[0].password)
+             bcrypt.compare(pass, encriptada, function(err, result) {
+                    if(result ==true){
+                        console.log(rows[0].password)
+                        const accessToken = jwt.sign({ userId: rows[0].correo , nombre : rows[0].password} , process.env.JWT_SECRET, {
+                            expiresIn: "1h"
+                        });
+                        res.status(200).json({
+                            msg:'Autenticación correcta',
+                            token : accessToken
+                        }) 
+    
+                    }else{
+                        res.status(401).json({
+                            msg:'No existe usuario',
+                        })
+                        console.log(err)
+                    }
+                }); 
         }else{
             res.status(401).json({msg:'Autenticación incorrecta'})
         }
@@ -63,6 +77,7 @@ function login (req, res) {
         console.log(err)
     })
 }
+
 
 function getProductos(req, res) {
     
@@ -78,14 +93,13 @@ function getProductos(req, res) {
         })
     })
 }
-
+    // Agregar usuarios *actualizado*
 function uploadUser(req, res) {
     const{nombre,apellidoPaterno,apellidoMaterno,telefono,email,password,nivelCuenta}= req.body
     //console.log(nombre,apellidoPaterno,apellidoMaterno,telefono,email,password,"hash",nivelCuenta)
-    bcrypt.hash(password,10,function(err,data){ 
+     bcrypt.hash(password,10,function(err,data){ 
         if(data){
-          
-            dbconn.query('INSERT INTO `cuenta`(`idUsuario`, `nivelCuenta`, `Correo`, `Contrasena`, `nombre`, `Apellido_paterno`, `Apellido_materno`, `telefono`) VALUES (?,?,?,?,?,?,?,?)',['1',nivelCuenta,email,data,nombre,apellidoPaterno,apellidoMaterno,telefono])
+            dbconn.query('INSERT INTO `heroku_1a378f873641606`.`usuarios` (`tipoUsuario`,`correo`,`password`,`nombre`,`apellido`)VALUES(?,?,?,?,?)',[nivelCuenta,email,data,nombre,apellidoPaterno])
             .then(rows=>{
                 res.status(200).json({msg:'Usuario creado'})
             }).catch(err=>{
@@ -93,11 +107,12 @@ function uploadUser(req, res) {
                 res.status(500).json({msg : 'ocurrió un error'})
             })
         }
-    })
-}
+    }) 
 
+}
+    //Mostrar usuarios *actualizado*
 function showUsers(req, res){
-    dbconn.query('SELECT * FROM `cuenta` WHERE 1')
+    dbconn.query('SELECT * FROM heroku_1a378f873641606.usuarios;')
     .then(rows=>{
         res.status(200).json({
             status:200,
