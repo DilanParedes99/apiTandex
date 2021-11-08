@@ -54,10 +54,10 @@ function uploadFile (req, res) {
         
     }
 
-    //login *actualizado*                       ---aun no implementado en el front----
+    //login *actualizado*                       ---YA IMPLEMENTADO EN EL FRONT----
 function login (req, res) {
-    const {email, password} = req.body
-    console.log(email,password, req.body)
+    const {email, pass} = req.body
+    console.log(email,pass, req.body)
 
     //SELECT * FROM heroku_1a378f873641606.usuarios where correo='admin2@gmail.com'
      dbconn.query('SELECT * FROM heroku_1a378f873641606.usuarios where correo= ?',[email]) 
@@ -66,7 +66,7 @@ function login (req, res) {
         const encriptada = rows[0].password
         if(rows.length == 1){
             console.log(rows[0].password)
-             bcrypt.compare(password, encriptada, function(err, result) {
+             bcrypt.compare(pass, encriptada, function(err, result) {
                     if(result ==true){
                         console.log(rows[0].password)
                         const accessToken = jwt.sign({ userId: rows[0].correo , nombre : rows[0].password} , process.env.JWT_SECRET, {
