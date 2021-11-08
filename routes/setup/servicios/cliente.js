@@ -16,7 +16,7 @@ const WooCommerce = new WooCommerceRestApi({
     version: 'wc/v3' // WooCommerce WP REST API version
   });
 
-//subir productos desde excel actualizado
+//subir productos desde excel ,headersactualizado       ----YA IMPLEMENTADO EN EL FRONT-----
 function uploadFile (req, res) {
     const archivo = req.body
     if(archivo.length==0 || archivo == null){
@@ -54,11 +54,10 @@ function uploadFile (req, res) {
         
     }
 
-    //login *actualizado*
+    //login *actualizado*                       ---aun no implementado en el front----
 function login (req, res) {
-    const {email, pass} = req.body
-    console.log(email,pass, req.body)
-    /* dbconn.query('SELECT * FROM `cuenta` WHERE correo= ?',[email]) */
+    const {email, password} = req.body
+    console.log(email,password, req.body)
 
     //SELECT * FROM heroku_1a378f873641606.usuarios where correo='admin2@gmail.com'
      dbconn.query('SELECT * FROM heroku_1a378f873641606.usuarios where correo= ?',[email]) 
@@ -67,7 +66,7 @@ function login (req, res) {
         const encriptada = rows[0].password
         if(rows.length == 1){
             console.log(rows[0].password)
-             bcrypt.compare(pass, encriptada, function(err, result) {
+             bcrypt.compare(password, encriptada, function(err, result) {
                     if(result ==true){
                         console.log(rows[0].password)
                         const accessToken = jwt.sign({ userId: rows[0].correo , nombre : rows[0].password} , process.env.JWT_SECRET, {
@@ -108,7 +107,7 @@ function getProductos(req, res) {
         })
     })
 }
-    // Agregar usuarios *actualizado*
+    // Agregar usuarios *actualizado*     ------NO IMPLEMENTADO-----
 function uploadUser(req, res) {
     const{nombre,apellidoPaterno,apellidoMaterno,telefono,email,password,nivelCuenta}= req.body
     //console.log(nombre,apellidoPaterno,apellidoMaterno,telefono,email,password,"hash",nivelCuenta)
@@ -141,7 +140,7 @@ function uploadUser(req, res) {
     })
 
 }
-    //Mostrar usuarios *actualizado*
+    //Mostrar usuarios *actualizado*       -----NO IMPLEMENTADO-----
 function showUsers(req, res){
     dbconn.query('SELECT * FROM heroku_1a378f873641606.usuarios;')
     .then(rows=>{
