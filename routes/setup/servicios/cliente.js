@@ -30,24 +30,18 @@ function uploadFile (req, res) {
         for(let indice = 0;indice<archivo.length;indice++){
             dbconn.query('call verificar_clave_primary_producto(?)',[archivo[indice]['Clave ']])
             .then(rows=>{
-
+                console.log(rows)
                 res.status(400).json({message:'clave duplicada, no se puede insertar'})
             }).catch(err=>{
                 console.log(err)
-                
-                dbconn.query('call update_productos(?,?,?,?,?,?,?)',
+                 dbconn.query('call update_productos(?,?,?,?,?,?,?)',
                     [archivo[indice]['Clave '],archivo[indice]['Linea '],archivo[indice]['Descripción '],archivo[indice]['Último costo '],'',archivo[indice]['Existencias '],archivo[indice]['Unidad de entrada ']])
                     .then(rows=>{
                         res.status(200).json({msg : 'Producto subidos con exito',data : rows})
                     }).catch(err=>{
                         console.log(err);
-                        process.on('unhandledRejection', error => {
-                            // Won't execute
-                            
-                          });
                         res.status(500).json({msg : 'ocurrió un error',error : err}) 
-                       
-                    })
+                    }) 
             })
         }  
         } 
@@ -56,17 +50,17 @@ function uploadFile (req, res) {
 
     //login *actualizado*                       ---YA IMPLEMENTADO EN EL FRONT----
 function login (req, res) {
-    const {email, pass} = req.body
-    console.log(email,pass, req.body)
+    const {email, password} = req.body
+    console.log(email,password, req.body)
 
     //SELECT * FROM heroku_1a378f873641606.usuarios where correo='admin2@gmail.com'
      dbconn.query('SELECT * FROM heroku_1a378f873641606.usuarios where correo= ?',[email]) 
     .then(rows=>{
-        console.log(rows)
+        console.log('',rows)
         const encriptada = rows[0].password
         if(rows.length == 1){
             console.log(rows[0].password)
-             bcrypt.compare(pass, encriptada, function(err, result) {
+             bcrypt.compare(password, encriptada, function(err, result) {
                     if(result ==true){
                         console.log(rows[0].password)
                         const accessToken = jwt.sign({ userId: rows[0].correo , nombre : rows[0].password} , process.env.JWT_SECRET, {
@@ -81,7 +75,7 @@ function login (req, res) {
                         res.status(401).json({
                             msg:'No existe usuario',
                         })
-                        console.log(err)
+                        
                     }
                 }); 
         }else{
@@ -89,13 +83,20 @@ function login (req, res) {
         }
     }).catch(err=>{
         console.log(err)
+        res.status(401).json({msg:'Autenticación incorrecta'})
     })
 }
 
 
+
+
+
+
+
+    //actualizado   ---YA IMPLEMENTADO EN EL FRONT----
 function getProductos(req, res) {
-    
-    dbconn.query('SELECT * FROM `productos` WHERE 1')
+   
+    dbconn.query('Select * from `heroku_1a378f873641606`.`productossae`')
     .then(rows=>{
             res.status(200).json({
                 status:200,
@@ -105,8 +106,16 @@ function getProductos(req, res) {
         res.status(401).json({
             msg:err
         })
-    })
+    })   
 }
+
+
+
+
+
+
+
+
     // Agregar usuarios *actualizado*     ------NO IMPLEMENTADO-----
 function uploadUser(req, res) {
     const{nombre,apellidoPaterno,apellidoMaterno,telefono,email,password,nivelCuenta}= req.body

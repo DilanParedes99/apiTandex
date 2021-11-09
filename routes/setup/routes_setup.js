@@ -38,8 +38,8 @@ module.exports.setup = (app,express) =>{
     app.post('/update_user',secureapp, controler.updateUser)
     
     //GET
-    app.get('/getProductos',secureapp,controler.getProductos)
-    app.get('/getUsers',secureapp,controler.showUsers)
+    app.get('/getProductos',controler.getProductos)
+    app.get('/getUsers',controler.showUsers)
     
     //API woocomerce
     app.post('/post_products',secureapp, controler.uploadProducts)

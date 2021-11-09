@@ -18,6 +18,16 @@ app.use(express.urlencoded({extended : true}))
 app.use(express.json());
 app.use(express.json({limit : '20mb'}))
 
+app.use((req,res,next)=>{
+        res.header("Cache-Control", "no-cache, no-store, must-revalidate");
+        res.header("Pragma", "no-cache");
+        res.header("Expires", 0);
+
+        next()
+})
+
+
+
 app = require('./routes/setup/routes_setup').setup(app,express)
 
 http.createServer(app).listen(puerto)
