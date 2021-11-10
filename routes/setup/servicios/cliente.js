@@ -88,11 +88,6 @@ function login (req, res) {
 }
 
 
-
-
-
-
-
     //actualizado   ---YA IMPLEMENTADO EN EL FRONT----
 function getProductos(req, res) {
    
@@ -109,11 +104,20 @@ function getProductos(req, res) {
     })   
 }
 
-
-
-
-
-
+function show(req, res) {
+   
+    dbconn.query('Select * from `heroku_1a378f873641606`.`usuario`')
+    .then(rows=>{
+            res.status(200).json({
+                status:200,
+                productos:rows
+            })
+    }).catch(err=>{
+        res.status(401).json({
+            msg:err
+        })
+    })   
+}
 
 
     // Agregar usuarios *actualizado*     ------NO IMPLEMENTADO-----
@@ -232,6 +236,9 @@ function updateProducts(req,res) {
     })
 }
 
+function subirArchivo(req, res) {
+    res.status(200).json({msg:'Actualiz'})
+}
 function updateUser(req,res) {
     const datos = req.body
     console.log(datos.nivelCuenta,datos.correo,datos.contrasena,datos.contrasena2,datos.nombre,datos.apellidoPaterno,datos.apellidoMaterno,datos.telefono,datos.apellidoPaterno,datos.id)
@@ -245,6 +252,8 @@ function updateUser(req,res) {
     })
 }
 
+
+
 module.exports= {
     login,
     uploadFile,
@@ -253,5 +262,6 @@ module.exports= {
     showUsers,
     uploadProducts,
     updateProducts,
-    updateUser
+    updateUser,
+    subirArchivo
 }

@@ -24,6 +24,8 @@ module.exports.setup = (app,express) =>{
             })
         }
     })
+                                //RUTAS
+
 
     //home prueba de servidor
     app.get('/', (req,res) => res.status(200).json({msg:'Api de TANDEX online'}))
@@ -36,6 +38,7 @@ module.exports.setup = (app,express) =>{
 
     app.post('/update_products',secureapp, controler.updateProducts)
     app.post('/update_user',secureapp, controler.updateUser)
+    app.post('/subirArchivo',controler.subirArchivo)
     
     //GET
     app.get('/getProductos',controler.getProductos)

@@ -26,8 +26,6 @@ app.use((req,res,next)=>{
         next()
 })
 
-
-
 app = require('./routes/setup/routes_setup').setup(app,express)
 
 http.createServer(app).listen(puerto)
