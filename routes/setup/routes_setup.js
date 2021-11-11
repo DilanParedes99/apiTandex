@@ -1,6 +1,7 @@
 const controler = require('./servicios/cliente')
 const jwt = require('jsonwebtoken')
 
+
 module.exports.setup = (app,express) =>{
     
     var secureapp = express.Router()
@@ -39,7 +40,7 @@ module.exports.setup = (app,express) =>{
     app.post('/update_products',secureapp, controler.updateProducts)
     app.post('/update_user',secureapp, controler.updateUser)
     app.post('/subirArchivo',controler.subirArchivo)
-    
+
     //GET
     app.get('/getProductos',controler.getProductos)
     app.get('/getUsers',controler.showUsers)

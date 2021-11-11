@@ -252,8 +252,6 @@ function updateUser(req,res) {
     })
 }
 
-
-
 module.exports= {
     login,
     uploadFile,
@@ -263,5 +261,5 @@ module.exports= {
     uploadProducts,
     updateProducts,
     updateUser,
-    subirArchivo
+    subirArchivo,
 }
