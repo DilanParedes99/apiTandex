@@ -153,7 +153,7 @@ function uploadUser(req, res) {
     })
 
 }
-    //Mostrar usuarios *actualizado*       -----NO IMPLEMENTADO-----
+    //Mostrar usuarios *actualizado*       -----IMPLEMENTADO-----
 function showUsers(req, res){
     dbconn.query('SELECT * FROM heroku_1a378f873641606.usuarios;')
     .then(rows=>{
@@ -164,6 +164,7 @@ function showUsers(req, res){
     })
 }
 
+    //usbir archivos desde excel   -----IMPLEMENTADO-----
 function uploadProducts(req, res){
     const productos = req.body.seleccionados.selectionModel
     const datos = req.body
@@ -224,16 +225,18 @@ function uploadProducts(req, res){
 
     }
 }
-
+    //actualizar datos de un producto  -----IMPLEMENTADO-----
 function updateProducts(req,res) {
     const datos = req.body
-    dbconn.query('UPDATE `productos` SET `Clave`=?,`Descripcion`=?,`Existencias`=?,`Unidad_de_entrada`=?,`Ultimo_costo`=?,`Campo_libre`=? WHERE id=?',[datos.clave,datos.descripcion,datos.existencias,datos.unidad_de_entrada,datos.ultimoCosto,datos.campoLibre,datos.id])
+    
+    dbconn.query('UPDATE `heroku_1a378f873641606`.`productossae` SET `linea` = ?,`descripcionP` = ?,`precio` = ?,`existencias` = ?,`unidadEntrada` = ?,`warrantyML` = ?,`listingTypeML` = ?,`currencyML` = ?,`buyingModeML` = ?,`titleML` = ?,`conditionML` = ?,`typeWOO` = ? WHERE `claveProducto` = ?',
+    [datos.linea,datos.descripcion,datos.precio,datos.existencias,datos.unidad,datos.warranty,datos.listingType,datos.currency,datos.buyingMode,datos.title,datos.condition,datos.typeWoo,datos.clave])
     .then(rows=>{
         res.status(200).json({msg:'Actualizado con exito'})
         console.log(rows)
     }).catch(err=>{
         console.log(err)
-    })
+    })  
 }
 
 function subirArchivo(req, res) {
