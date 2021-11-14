@@ -88,7 +88,7 @@ function login (req, res) {
 }
 
 
-    //actualizado   ---YA IMPLEMENTADO EN EL FRONT----
+    //actualizado                   ---IMPLEMENTADO----
 function getProductos(req, res) {
    
     dbconn.query('Select * from `heroku_1a378f873641606`.`productossae`')
@@ -104,67 +104,7 @@ function getProductos(req, res) {
     })   
 }
 
-function show(req, res) {
-   
-    dbconn.query('Select * from `heroku_1a378f873641606`.`usuario`')
-    .then(rows=>{
-            res.status(200).json({
-                status:200,
-                productos:rows
-            })
-    }).catch(err=>{
-        res.status(401).json({
-            msg:err
-        })
-    })   
-}
-
-
-    // Agregar usuarios *actualizado*     ------NO IMPLEMENTADO-----
-function uploadUser(req, res) {
-    const{nombre,apellidoPaterno,apellidoMaterno,telefono,email,password,nivelCuenta}= req.body
-    //console.log(nombre,apellidoPaterno,apellidoMaterno,telefono,email,password,"hash",nivelCuenta)
-
-    dbconn.query(`call valida_correo_repetido(?)`,[email])
-    .then(rows=>{
-        const datos = rows[0];
-
-        const correoV = JSON.stringify(datos[0].correo);
-        const correoV2 = JSON.stringify(email);
-        
-        if(correoV2 == correoV){
-            res.status(400).json({message:'El usuario ya existe'})
-        }
-        
-    }).catch(err=>{
-        /* res.status(200).json({message:'El correo no existe en la base de datos'}) */
-        console.log(err)
-        bcrypt.hash(password,10,function(err,data){ 
-          if(data){
-              dbconn.query('INSERT INTO `heroku_1a378f873641606`.`usuarios` (`tipoUsuario`,`correo`,`password`,`nombre`,`apellido`)VALUES(?,?,?,?,?)',[nivelCuenta,email,data,nombre,apellidoPaterno])
-              .then(rows=>{
-                  res.status(200).json({msg:'Usuario creado'})
-              }).catch(err=>{
-                  console.log(err);
-                  res.status(500).json({msg : 'ocurrió un error'})
-              })
-          }
-      })  
-    })
-
-}
-    //Mostrar usuarios *actualizado*       -----IMPLEMENTADO-----
-function showUsers(req, res){
-    dbconn.query('SELECT * FROM heroku_1a378f873641606.usuarios;')
-    .then(rows=>{
-        res.status(200).json({
-            status:200,
-            usuarios:rows
-        })
-    })
-}
-
-    //usbir archivos desde excel   -----IMPLEMENTADO-----
+//usbir archivos desde excel   -----IMPLEMENTADO-----
 function uploadProducts(req, res){
     const productos = req.body.seleccionados.selectionModel
     const datos = req.body
@@ -177,7 +117,7 @@ function uploadProducts(req, res){
             .then(rows=>{
                 /* console.log(rows[0])
                 console.log("descricpion: ",rows[0].Descripcion) */
-
+                
                 const data = {
                     name: rows[0].Descripcion,
                     type: "simple",
@@ -185,47 +125,47 @@ function uploadProducts(req, res){
                     short_description: "<p>CARACTERÍSTICAS</p>\n<ul>\n<li>"+datos.short_description+"</li>\n</ul>\n",
                     regular_price: datos.regular_price,
                     categories: [
-                      {
-                          "id": 243,
-                          "name": datos.category,
-                          "slug": datos.category
-                      }
-                  ],
+                        {
+                            "id": 243,
+                            "name": datos.category,
+                            "slug": datos.category
+                        }
+                    ],
                     images: [
-                      {
-                        src: "http://demo.woothemes.com/woocommerce/wp-content/uploads/sites/56/2013/06/T_4_front.jpg"
-                      },
-                      {
-                        src: "http://demo.woothemes.com/woocommerce/wp-content/uploads/sites/56/2013/06/T_4_back.jpg"
-                      },
-                      {
-                        src: "http://demo.woothemes.com/woocommerce/wp-content/uploads/sites/56/2013/06/T_3_front.jpg"
-                      },
-                      {
-                        src: "http://demo.woothemes.com/woocommerce/wp-content/uploads/sites/56/2013/06/T_3_back.jpg"
-                      }
+                        {
+                            src: "http://demo.woothemes.com/woocommerce/wp-content/uploads/sites/56/2013/06/T_4_front.jpg"
+                        },
+                        {
+                            src: "http://demo.woothemes.com/woocommerce/wp-content/uploads/sites/56/2013/06/T_4_back.jpg"
+                        },
+                        {
+                            src: "http://demo.woothemes.com/woocommerce/wp-content/uploads/sites/56/2013/06/T_3_front.jpg"
+                        },
+                        {
+                            src: "http://demo.woothemes.com/woocommerce/wp-content/uploads/sites/56/2013/06/T_3_back.jpg"
+                        }
                     ],
                     
-                  };
-             
-                WooCommerce.post("products", data)
-               .then(response => {
-                // Successful request
-                res.status(200).json({msg:'Todo bien',status:response.status})
+                };
                 
-              }).catch(error => {
-                res.status(400).json({msg:eror})
-              }) 
-              
+                WooCommerce.post("products", data)
+                .then(response => {
+                    // Successful request
+                    res.status(200).json({msg:'Todo bien',status:response.status})
+                    
+                }).catch(error => {
+                    res.status(400).json({msg:eror})
+                }) 
+                
             }).catch(err=>{
                 console.log(err);
                 res.status(500).json({msg : 'ocurrió un error'})
             })
         }
-
+        
     }
 }
-    //actualizar datos de un producto  -----IMPLEMENTADO-----
+//actualizar datos de un producto  -----IMPLEMENTADO-----
 function updateProducts(req,res) {
     const datos = req.body
     
@@ -242,27 +182,95 @@ function updateProducts(req,res) {
 function subirArchivo(req, res) {
     res.status(200).json({msg:'Actualiz'})
 }
+
+                                                                        //CONSULTAS DE USUARIOS!!
+
+// Agregar usuarios *actualizado*     ------NO IMPLEMENTADO-----
+function uploadUser(req, res) {
+const{nombre,apellidoPaterno,apellidoMaterno,telefono,email,password,nivelCuenta}= req.body
+//console.log(nombre,apellidoPaterno,apellidoMaterno,telefono,email,password,"hash",nivelCuenta)
+
+dbconn.query(`call valida_correo_repetido(?)`,[email])
+.then(rows=>{
+    const datos = rows[0];
+
+    const correoV = JSON.stringify(datos[0].correo);
+    const correoV2 = JSON.stringify(email);
+    
+    if(correoV2 == correoV){
+        res.status(400).json({message:'El usuario ya existe'})
+    }
+    
+}).catch(err=>{
+    /* res.status(200).json({message:'El correo no existe en la base de datos'}) */
+    console.log(err)
+    bcrypt.hash(password,10,function(err,data){ 
+      if(data){
+          dbconn.query('INSERT INTO `heroku_1a378f873641606`.`usuarios` (`tipoUsuario`,`correo`,`password`,`nombre`,`apellido`)VALUES(?,?,?,?,?)',[nivelCuenta,email,data,nombre,apellidoPaterno])
+          .then(rows=>{
+              res.status(200).json({msg:'Usuario creado'})
+          }).catch(err=>{
+              console.log(err);
+              res.status(500).json({msg : 'ocurrió un error'})
+          })
+      }
+  })  
+})
+
+}
+//Mostrar usuarios *actualizado*       -----IMPLEMENTADO-----
+function showUsers(req, res){
+dbconn.query('SELECT * FROM heroku_1a378f873641606.usuarios;')
+.then(rows=>{
+    res.status(200).json({
+        status:200,
+        usuarios:rows
+    })
+})
+}
+
+//actualizar usuario -----IMPLEMENTADO-----
 function updateUser(req,res) {
     const datos = req.body
-    console.log(datos.nivelCuenta,datos.correo,datos.contrasena,datos.contrasena2,datos.nombre,datos.apellidoPaterno,datos.apellidoMaterno,datos.telefono,datos.apellidoPaterno,datos.id)
-    dbconn.query('UPDATE `cuenta` SET  `nivelCuenta`=?,`Correo`=?,`Contrasena`=?,`nombre`=?,`Apellido_paterno`=?,`Apellido_materno`=?,`telefono`=? WHERE id=?',[datos.nivelCuenta,datos.correo,datos.contrasena,datos.nombre,datos.apellidoPaterno,datos.apellidoMaterno,datos.telefono,datos.id])
+    console.log(datos.tipoUsuario,datos.correo,datos.nombre,datos.apellido,datos.id)
+    /* UPDATE `heroku_1a378f873641606`.`usuarios` SET `id` = ?,`tipoUsuario` = ?,`correo` = ?,`password` = ?,`nombre` = ?,`apellido` = ? WHERE `id` = ? */
+    
+    dbconn.query('UPDATE `heroku_1a378f873641606`.`usuarios` SET `tipoUsuario` = ?,`correo` = ?,`nombre` = ?,`apellido` = ? WHERE `id` = ?',
+    [datos.tipoUsuario,datos.correo,datos.nombre,datos.apellido,datos.id])
     .then(rows=>{
         res.status(200).json({
             msg:'Usuario actualizado con exito'})
             console.log(rows)
-    }).catch(err=>{
-        console.log(err)
-    })
+        }).catch(err=>{
+            console.log(err)
+        }) 
 }
 
-module.exports= {
-    login,
-    uploadFile,
-    getProductos,
-    uploadUser,
-    showUsers,
-    uploadProducts,
-    updateProducts,
-    updateUser,
-    subirArchivo,
+//borrar usuario -----IMPLEMENTADO-----
+function deleteUser(req,res){
+    const datos = req.body
+    console.log("los datos son",req.body)
+
+    dbconn.query('DELETE FROM `heroku_1a378f873641606`.`usuarios` WHERE id=?',[datos.id])
+    .then(rows=>{
+        res.status(200).json({
+            msg:'Usuario eliminado'})
+            console.log(rows)
+        }).catch(err=>{
+            console.log(err)
+        }) 
+
+}
+    
+    module.exports= {
+        login,
+        uploadFile,
+        getProductos,
+        uploadUser,
+        showUsers,
+        uploadProducts,
+        updateProducts,
+        updateUser,
+        subirArchivo,
+        deleteUser
 }

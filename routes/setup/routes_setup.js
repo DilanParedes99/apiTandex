@@ -35,11 +35,13 @@ module.exports.setup = (app,express) =>{
     app.post('/login', controler.login)
 
     app.post('/upload_file', controler.uploadFile)
-    app.post('/upload_user',secureapp,controler.uploadUser)
-
+    
     app.post('/update_products',secureapp, controler.updateProducts)
-    app.post('/update_user',secureapp, controler.updateUser)
     app.post('/subirArchivo',controler.subirArchivo)
+    
+    app.post('/upload_user',secureapp,controler.uploadUser)
+    app.post('/update_user',secureapp, controler.updateUser)
+    app.post('/delete_user',secureapp,controler.deleteUser)
 
     //GET
     app.get('/getProductos',controler.getProductos)
