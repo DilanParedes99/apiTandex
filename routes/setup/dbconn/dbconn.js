@@ -3,6 +3,7 @@ const server_config = require('config')
 
 module.exports = () =>{
     let config = {
+        connectionLimit : 20,
         host : server_config.get('db.host'),
         database : server_config.get('db.db'),
         user : server_config.get('db.user'),
@@ -14,7 +15,7 @@ module.exports = () =>{
 
 class Database {
     constructor(config) {
-        this.connection = mysql.createConnection(config)
+        this.connection = mysql.createPool(config)
         //console.log(this.connection)
     }
 
