@@ -16,7 +16,7 @@ app.use(morgan('dev'));
 
 app.use(express.urlencoded({extended : true})) 
 app.use(express.json());
-app.use(express.json({limit : '20mb'}))
+app.use(express.json({limit : '100mb'}))
 
 app.use((req,res,next)=>{
         res.header("Cache-Control", "no-cache, no-store, must-revalidate");
