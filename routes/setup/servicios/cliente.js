@@ -187,8 +187,8 @@ function subirArchivo(req, res) {
 
 // Agregar usuarios *actualizado*     ------NO IMPLEMENTADO-----
 function uploadUser(req, res) {
-const{nombre,apellidoPaterno,apellidoMaterno,telefono,email,password,nivelCuenta}= req.body
-//console.log(nombre,apellidoPaterno,apellidoMaterno,telefono,email,password,"hash",nivelCuenta)
+const{nombre,apellidoPaterno,email,password,nivelCuenta}= req.body
+console.log(nombre,apellidoPaterno,email,password,"hash",nivelCuenta)
 
 dbconn.query(`call valida_correo_repetido(?)`,[email])
 .then(rows=>{
