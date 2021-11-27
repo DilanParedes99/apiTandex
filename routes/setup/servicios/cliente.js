@@ -86,7 +86,7 @@ function login (req, res) {
         res.status(401).json({msg:'Autenticación incorrecta'})
     })
 }
-
+                                                                        //Consultas de productos
 
     //actualizado                   ---IMPLEMENTADO----
 function getProductos(req, res) {
@@ -183,9 +183,25 @@ function subirArchivo(req, res) {
     res.status(200).json({msg:'Actualiz'})
 }
 
+function deleteProducto(req,res){
+    const datos = req.body
+    /* console.log("los datos son: ",datos) */
+
+    dbconn.query('DELETE FROM `heroku_1a378f873641606`.`productossae` WHERE claveProducto = ?',[datos.claveProducto])
+    .then(rows=>{
+        res.status(200).json({
+            msg:'Usuario eliminado'})
+            console.log(rows)
+        }).catch(err=>{
+            console.log(err)
+        }) 
+
+}
+
+
                                                                         //CONSULTAS DE USUARIOS!!
 
-// Agregar usuarios *actualizado*     ------NO IMPLEMENTADO-----
+// Agregar usuarios *actualizado*     ------IMPLEMENTADO-----
 function uploadUser(req, res) {
 const{nombre,apellidoPaterno,email,password,nivelCuenta}= req.body
 console.log(nombre,apellidoPaterno,email,password,"hash",nivelCuenta)
@@ -249,7 +265,7 @@ function updateUser(req,res) {
 //borrar usuario -----IMPLEMENTADO-----
 function deleteUser(req,res){
     const datos = req.body
-    console.log("los datos son",req.body)
+    /* console.log("los datos son",req.body) */
 
     dbconn.query('DELETE FROM `heroku_1a378f873641606`.`usuarios` WHERE id=?',[datos.id])
     .then(rows=>{
@@ -272,5 +288,6 @@ function deleteUser(req,res){
         updateProducts,
         updateUser,
         subirArchivo,
-        deleteUser
+        deleteUser,
+        deleteProducto
 }
