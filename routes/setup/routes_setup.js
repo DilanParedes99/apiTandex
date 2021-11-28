@@ -41,6 +41,9 @@ module.exports.setup = (app,express) =>{
     app.post('/deleteProducto',secureapp,controler.deleteProducto)
     
     app.post('/upload_user',secureapp,controler.uploadUser)
+    app.post('/add_producto',secureapp,controler.addProducto)
+
+
     app.post('/update_user',secureapp, controler.updateUser)
     app.post('/delete_user',secureapp,controler.deleteUser)
 

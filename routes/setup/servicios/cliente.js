@@ -198,6 +198,40 @@ function deleteProducto(req,res){
 
 }
 
+function addProducto(req,res){
+    const data = req.body
+    console.log(data)
+    /* res.status(200).json({msg:'Hecho'}) */
+    if(data.clave==''){
+        res.status(400).json({msg:'ERROR: Revise los campos.'})
+    }else{
+        dbconn.query('SELECT claveProducto FROM heroku_1a378f873641606.productossae where claveProducto=?',[data.clave],)
+        .then(rows=>{
+            /* console.log(rows[0].claveProducto) */
+            if(rows[0].claveProducto == data.clave){
+                res.status(400).json({msg:'ERROR: La clave de producto ya esta registrada.'})
+                console.log("iguales")
+            }
+            
+        }).catch(err=>{
+            dbconn.query('INSERT INTO `heroku_1a378f873641606`.`productossae`(`claveProducto`,`linea`,`descripcionP`,`precio`,`existencias`,`unidadEntrada`,`warrantyML`,`listingTypeML`,`currencyML`,`buyingModeML`,`titleML`,`conditionML`,`typeWOO`,`shortDescriptionWOO`)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+            [data.clave,data.linea,data.descripcion,data.precio,data.existencias,data.unidad,data.warranty,data.listingType,data.currency,data.buyingMode,data.title,data.condition,data.typeWoo,data.shortDescription])
+            .then(rows=>{
+                res.status(200).json({msg:'Producto añadido correctamente'})
+                console.log(rows)
+            }).catch(err=>{
+                console.log(err)
+                res.status(400).json({msg:'ERROR: Algo fue mal, intentelo mas tarde'})
+            })
+            /* console.log(err) */
+        })
+    }
+
+
+    
+    
+}
+
 
                                                                         //CONSULTAS DE USUARIOS!!
 
@@ -289,5 +323,6 @@ function deleteUser(req,res){
         updateUser,
         subirArchivo,
         deleteUser,
-        deleteProducto
+        deleteProducto,
+        addProducto
 }
