@@ -37,7 +37,6 @@ module.exports.setup = (app,express) =>{
     app.post('/upload_file', controler.uploadFile)
     
     app.post('/update_products',secureapp, controler.updateProducts)
-    app.post('/subirArchivo',secureapp,controler.subirArchivo)
     app.post('/deleteProducto',secureapp,controler.deleteProducto)
     
     app.post('/upload_user',secureapp,controler.uploadUser)
@@ -50,6 +49,7 @@ module.exports.setup = (app,express) =>{
     //GET
     app.get('/getProductos',controler.getProductos)
     app.get('/getUsers',controler.showUsers)
+    app.get('/getProductosPublicados',controler.getProductosPublicados)
     
     //API woocomerce
     app.post('/post_products',secureapp, controler.uploadProducts)

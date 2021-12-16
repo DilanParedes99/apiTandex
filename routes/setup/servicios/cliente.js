@@ -104,31 +104,46 @@ function getProductos(req, res) {
     })   
 }
 
-//usbir archivos desde excel   -----IMPLEMENTADO-----
+//subir a woocomerce   ----- NO IMPLEMENTADO-----
 function uploadProducts(req, res){
-    const productos = req.body.seleccionados.selectionModel
     const datos = req.body
-    if( productos === undefined){
+    const user = req.headers.user
+    
+    console.log(user) 
+    console.log(datos) 
+    //validacion si algun campo es NULL, '' o UNDEFINED
+
+    /* datos.forEach(function(item){
+        let i = Object.keys(item).length
+        console.log(i)
+        for(var j in item){
+            //console.log(item[j])
+            if(item[j]===null || item[j]===undefined || item[j]===''){
+                console.log("incompleto")
+                res.status(400).json({msg:"Alguno de los prtoductos no cuenta con los datos requeridos sufucientes."})
+                break
+            }
+        }
+    }) */
+
+
+    if(datos.length === 0){
         res.status(401).json({error:'Productos no seleccionados',
         message:'Reintente seleccionar archivos'    })
-    }else{
-        for(let i =0;i<productos.length; i++){
-            dbconn.query('SELECT `id`, `Clave`, `Descripcion`, `Existencias`, `Línea`, `Unidad_de_entrada`, `Moneda`, `Fecha_ultima_compra`, `Ultimo_costo`, `Nombre_de_imagen`, `ID_SAE`, `Clave_unidad`, `Clave_alterna`, `Campo_libre` FROM `productos` WHERE id=?',[productos[i]])
-            .then(rows=>{
-                /* console.log(rows[0])
-                console.log("descricpion: ",rows[0].Descripcion) */
-                
-                const data = {
-                    name: rows[0].Descripcion,
-                    type: "simple",
-                    description: datos.description,
-                    short_description: "<p>CARACTERÍSTICAS</p>\n<ul>\n<li>"+datos.short_description+"</li>\n</ul>\n",
-                    regular_price: datos.regular_price,
+    }
+    else{
+        for(let i =0;i<datos.length; i++){
+            const data = {
+                    name: datos[i].descripcionP,
+                    type: datos[i].typeWOO,
+                    description: datos[i].descriptionWoo,
+                    short_description: "<p>CARACTERÍSTICAS</p>\n<ul>\n<li>"+datos[i].shortDescriptionWOO+"</li>\n</ul>\n",
+                    regular_price: datos[i].precio.toString(),
                     categories: [
                         {
-                            "id": 243,
-                            "name": datos.category,
-                            "slug": datos.category
+                            "id": 123,
+                            "name": datos[i].categoryWOO,
+                            "slug": "desconocido"
                         }
                     ],
                     images: [
@@ -147,40 +162,49 @@ function uploadProducts(req, res){
                     ],
                     
                 };
-                
+            
+                //peticion para subir a WOO
                 WooCommerce.post("products", data)
                 .then(response => {
                     // Successful request
-                    res.status(200).json({msg:'Todo bien',status:response.status})
-                    
+                    //res.status(200).json({msg:'Todo bien',status:response.status})
+                    //console.log(response.data.id)
+                    controlProducto(user,datos[i].claveProducto)
                 }).catch(error => {
-                    res.status(400).json({msg:eror})
-                }) 
-                
-            }).catch(err=>{
-                console.log(err);
-                res.status(500).json({msg : 'ocurrió un error'})
-            })
-        }
+                    res.status(400).json({msg:error})
+                })  
+            } 
+            bitacora()
+            res.status(200).json({'msg':'Productos subidos correctamente'})
+        }  
         
     }
-}
+    
+    function bitacora(){
+        console.log("entra a bitacora")
+        let now= new Date();
+        console.log('La fecha actual es',now);
+    }
+
+    function controlProducto(user,datos){
+        dbconn.query('SELECT * FROM heroku_1a378f873641606.usuarios where correo=?',[user])
+        .then(rows=>{
+            dbconn.query('INSERT INTO `heroku_1a378f873641606`.`productos_publicados`(`claveProductoP`,`woocomerce`,`idUsuarioPP`)VALUES(?,?,?)',[datos,"WOO",rows[0].id])
+        })
+    }
+
 //actualizar datos de un producto  -----IMPLEMENTADO-----
 function updateProducts(req,res) {
     const datos = req.body
-    
-    dbconn.query('UPDATE `heroku_1a378f873641606`.`productossae` SET `linea` = ?,`descripcionP` = ?,`precio` = ?,`existencias` = ?,`unidadEntrada` = ?,`warrantyML` = ?,`listingTypeML` = ?,`currencyML` = ?,`buyingModeML` = ?,`titleML` = ?,`conditionML` = ?,`typeWOO` = ? WHERE `claveProducto` = ?',
-    [datos.linea,datos.descripcion,datos.precio,datos.existencias,datos.unidad,datos.warranty,datos.listingType,datos.currency,datos.buyingMode,datos.title,datos.condition,datos.typeWoo,datos.clave])
+    console.log(datos)
+    dbconn.query('UPDATE `heroku_1a378f873641606`.`productossae` SET `linea` = ?,`descripcionP` = ?,`precio` = ?,`existencias` = ?,`unidadEntrada` = ?,`typeWOO` = ?,`shortDescriptionWOO` = ?,`descriptionWoo` = ?,`categoryWOO` = ? WHERE `claveProducto` = ?',
+    [datos.linea,datos.descripcion,datos.precio,datos.existencias,datos.unidad,datos.typeWoo,datos.shortDescriptionWOO,datos.descriptionWOO,datos.categoryWOO,datos.clave])
     .then(rows=>{
         res.status(200).json({msg:'Actualizado con exito'})
         console.log(rows)
     }).catch(err=>{
         console.log(err)
     })  
-}
-
-function subirArchivo(req, res) {
-    res.status(200).json({msg:'Actualiz'})
 }
 
 function deleteProducto(req,res){
@@ -214,8 +238,8 @@ function addProducto(req,res){
             }
             
         }).catch(err=>{
-            dbconn.query('INSERT INTO `heroku_1a378f873641606`.`productossae`(`claveProducto`,`linea`,`descripcionP`,`precio`,`existencias`,`unidadEntrada`,`warrantyML`,`listingTypeML`,`currencyML`,`buyingModeML`,`titleML`,`conditionML`,`typeWOO`,`shortDescriptionWOO`)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-            [data.clave,data.linea,data.descripcion,data.precio,data.existencias,data.unidad,data.warranty,data.listingType,data.currency,data.buyingMode,data.title,data.condition,data.typeWoo,data.shortDescription])
+            dbconn.query('INSERT INTO `heroku_1a378f873641606`.`productossae`(`claveProducto`,`linea`,`descripcionP`,`precio`,`existencias`,`unidadEntrada`,`typeWOO`,`shortDescriptionWOO`,`descriptionWoo`,`categoryWOO`)VALUES(?,?,?,?,?,?,?,?,?,?)',
+            [data.clave,data.linea,data.descripcion,data.precio,data.existencias,data.unidad,data.typeWoo,data.shortDescription,data.descriptionWOO,data.categoryWOO])
             .then(rows=>{
                 res.status(200).json({msg:'Producto añadido correctamente'})
                 console.log(rows)
@@ -232,9 +256,17 @@ function addProducto(req,res){
     
 }
 
-
-                                                                        //CONSULTAS DE USUARIOS!!
-
+function getProductosPublicados(req, res) {
+    dbconn.query('select P.id, P.claveProductoP, S.descripcionP , P.woocomerce  from  `heroku_1a378f873641606`.`productos_publicados` as P inner join `heroku_1a378f873641606`.`productossae` as S on P.claveProductoP = S.claveProducto')
+    .then(rows=>{
+        console.log(rows)
+        res.status(200).json({
+            status:200,
+            datos:rows
+        })
+    })
+}
+                                                                       //CONSULTAS DE USUARIOS!!
 // Agregar usuarios *actualizado*     ------IMPLEMENTADO-----
 function uploadUser(req, res) {
 const{nombre,apellidoPaterno,email,password,nivelCuenta}= req.body
@@ -272,6 +304,7 @@ dbconn.query(`call valida_correo_repetido(?)`,[email])
 function showUsers(req, res){
 dbconn.query('SELECT * FROM heroku_1a378f873641606.usuarios;')
 .then(rows=>{
+    console.log(rows)
     res.status(200).json({
         status:200,
         usuarios:rows
@@ -321,8 +354,8 @@ function deleteUser(req,res){
         uploadProducts,
         updateProducts,
         updateUser,
-        subirArchivo,
         deleteUser,
         deleteProducto,
-        addProducto
+        addProducto,
+        getProductosPublicados
 }
