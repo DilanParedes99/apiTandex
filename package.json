@@ -1,32 +1,79 @@
 {
   
   "name": "backend",
+  
   "version": "1.0.0",
+  
   "description": "backend for Tandex",
+  
   "main": "index.js",
+  
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server.js",
-    "start": "node server.js"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
+  
     
-    "@woocommerce/woocommerce-rest-api": "^1.0.1",
-    "axios": "^0.21.1",
-    "bcrypt": "^5.0.1",
-    "bcryptjs": "^2.4.3",
-    "body-parser": "^1.19.0",
-    "config": "^3.3.6",
-    "cors": "^2.8.5",
-    "express": "^4.17.1",
-    "jsonwebtoken": "^8.5.1",
-    "morgan": "^1.10.0",
-    "multer": "^1.4.3",
-    "mysql": "^2.18.1",
-    "nodemon": "^2.0.7",
-    "woocommerce-api": "^1.5.0",
-    "xlsx": "^0.17.0"
+  "test": "echo \"Error: no test specified\" && exit 1",
+  
+    
+  "dev": "nodemon server.js",
+  
+    
+  "start": "node server.js"
+  
+  },
+  
+  "author": "",
+  
+  "license": "ISC",
+  
+  "dependencies": {
+  
+    
+  "@woocommerce/woocommerce-rest-api": "^1.0.1",
+  
+    
+  "axios": "^0.21.1",
+  
+    
+  "bcrypt": "^5.0.1",
+  
+    
+  "bcryptjs": "^2.4.3",
+  
+    
+  "body-parser": "^1.19.0",
+  
+    
+  "config": "^3.3.6",
+  
+    
+  "cors": "^2.8.5",
+  
+    
+  "dateformat": "^5.0.2",
+  
+    
+  "express": "^4.17.1",
+  
+    
+  "jsonwebtoken": "^8.5.1",
+  
+    
+  "morgan": "^1.10.0",
+  
+    
+  "multer": "^1.4.3",
+  
+    
+  "mysql": "^2.18.1",
+  
+    
+  "nodemon": "^2.0.7",
+  
+    
+  "woocommerce-api": "^1.5.0",
+  
+    
+  "xlsx": "^0.17.0"
+  
   }
 }

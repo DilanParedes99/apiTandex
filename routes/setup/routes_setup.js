@@ -47,9 +47,10 @@ module.exports.setup = (app,express) =>{
     app.post('/delete_user',secureapp,controler.deleteUser)
 
     //GET
-    app.get('/getProductos',controler.getProductos)
-    app.get('/getUsers',controler.showUsers)
-    app.get('/getProductosPublicados',controler.getProductosPublicados)
+    app.get('/getProductos',secureapp,controler.getProductos)
+    app.get('/getUsers',secureapp,controler.showUsers)
+    app.get('/getProductosPublicados',secureapp,controler.getProductosPublicados)
+    app.get('/getBitacora',secureapp,controler.getBitacora)
     
     //API woocomerce
     app.post('/post_products',secureapp, controler.uploadProducts)

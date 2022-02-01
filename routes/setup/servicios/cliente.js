@@ -1,6 +1,8 @@
 const dbconn = require('../dbconn/dbconn')()
 const jwt = require('jsonwebtoken')
 
+const now = new Date();
+
 //encriptacion de password
 const bcrypt = require('bcrypt');
 
@@ -104,28 +106,12 @@ function getProductos(req, res) {
     })   
 }
 
-//subir a woocomerce   ----- NO IMPLEMENTADO-----
+//subir a woocomerce   ----- IMPLEMENTADO-----
 function uploadProducts(req, res){
     const datos = req.body
+
     const user = req.headers.user
     
-    console.log(user) 
-    console.log(datos) 
-    //validacion si algun campo es NULL, '' o UNDEFINED
-
-    /* datos.forEach(function(item){
-        let i = Object.keys(item).length
-        console.log(i)
-        for(var j in item){
-            //console.log(item[j])
-            if(item[j]===null || item[j]===undefined || item[j]===''){
-                console.log("incompleto")
-                res.status(400).json({msg:"Alguno de los prtoductos no cuenta con los datos requeridos sufucientes."})
-                break
-            }
-        }
-    }) */
-
 
     if(datos.length === 0){
         res.status(401).json({error:'Productos no seleccionados',
@@ -166,24 +152,29 @@ function uploadProducts(req, res){
                 //peticion para subir a WOO
                 WooCommerce.post("products", data)
                 .then(response => {
-                    // Successful request
-                    //res.status(200).json({msg:'Todo bien',status:response.status})
-                    //console.log(response.data.id)
                     controlProducto(user,datos[i].claveProducto)
                 }).catch(error => {
                     res.status(400).json({msg:error})
                 })  
             } 
-            bitacora()
+            bitacora(user,datos)
             res.status(200).json({'msg':'Productos subidos correctamente'})
         }  
         
     }
     
-    function bitacora(){
+    function bitacora(user,datos){
         console.log("entra a bitacora")
-        let now= new Date();
-        console.log('La fecha actual es',now);
+        let cantidad = datos.length
+        let date= new Date();
+        let fecha= date.getFullYear()+'-'+date.getMonth()+'-'+date.getDay()
+        console.log('La fecha actual es',fecha); 
+        dbconn.query('SELECT * FROM heroku_1a378f873641606.usuarios where correo=?',[user])
+        .then(rows =>{
+            dbconn.query('INSERT INTO `heroku_1a378f873641606`.`bitacora`(`idUsuarioB`,`fecha`,`modificacion`,`cantidad`)VALUES(?,?,?,?)',[rows[0].id,fecha,'Publicación de productos',cantidad])
+        })
+       
+        
     }
 
     function controlProducto(user,datos){
@@ -304,7 +295,7 @@ dbconn.query(`call valida_correo_repetido(?)`,[email])
 function showUsers(req, res){
 dbconn.query('SELECT * FROM heroku_1a378f873641606.usuarios;')
 .then(rows=>{
-    console.log(rows)
+    
     res.status(200).json({
         status:200,
         usuarios:rows
@@ -344,7 +335,17 @@ function deleteUser(req,res){
         }) 
 
 }
-    
+
+function getBitacora(req,res){
+    dbconn.query('select B.fecha, B.modificacion, U.tipoUsuario,U.correo, concat_ws(" ",U.nombre,U.apellido) as Nombre, B.cantidad from `heroku_1a378f873641606`.`bitacora` as B inner join `heroku_1a378f873641606`.`usuarios` as U on B.idUsuarioB=U.id')
+    .then(rows=>{
+        console.log(rows)
+        res.status(200).json({
+            status:200,
+            bitacora:rows
+        })
+    })
+}
     module.exports= {
         login,
         uploadFile,
@@ -357,5 +358,6 @@ function deleteUser(req,res){
         deleteUser,
         deleteProducto,
         addProducto,
-        getProductosPublicados
-}
+        getProductosPublicados,
+        getBitacora
+    }
